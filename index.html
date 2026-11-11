@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<title>Saisie caisse</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#121212">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Caisse">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<style>
+  html,body{margin:0;height:100%;background:#121212;overflow:hidden}
+  iframe{position:fixed;inset:0;width:100%;height:100%;border:0;background:#121212}
+</style>
+</head>
+<body>
+<iframe id="app" title="Saisie caisse" allow="clipboard-write"></iframe>
+<script>
+  // Le code d'accès est saisi une seule fois dans l'app, puis gardé ici, dans la mémoire de cette page.
+  var EXEC = "https://script.google.com/macros/s/AKfycbx8BZhYHKAoZMKjvDFVbjHlWyOPQnOXGTut6W7Hdewq8AWU23u6KSB9eC5ob2GZvnE0Mg/exec";
+  var k = "";
+  try { k = localStorage.getItem("caisse_k") || ""; } catch (e) {}
+  document.getElementById("app").src = EXEC + (/^\d{4,8}$/.test(k) ? "?k=" + k : "");
+  window.addEventListener("message", function (e) {
+    if (!/^https:\/\/[a-z0-9-]+[.-]script\.googleusercontent\.com$/.test(e.origin)) return;
+    var c = e.data && e.data.caisseCode;
+    try {
+      if (c === null) localStorage.removeItem("caisse_k");
+      else if (typeof c === "string" && /^\d{4,8}$/.test(c)) localStorage.setItem("caisse_k", c);
+    } catch (err) {}
+  });
+</script>
+</body>
+</html>
